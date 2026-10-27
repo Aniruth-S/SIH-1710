@@ -29,13 +29,18 @@ Kiosk-to-phone handoff. A kiosk shows a QR code, and scanning it sends the route
 ## Proposed Solution / Architecture Diagram
 ![alt text](railpath_architecture_diagram.png)
 
-**Working Flow**
+## Working Flow
 
 **Map creation** - Station floor plans are digitised into a navigation graph (nodes = junctions, doors, stairs, lifts; edges = walkable paths with distance and accessibility flags). POIs are tagged (platform, restroom, ATM, and so on).
+
 **Positioning** - The phone’s location is estimated indoors using BLE beacons plus Wi-Fi fingerprinting, plus phone sensors (accelerometer, gyroscope, compass) for pedestrian dead reckoning. Fusion filtering (Kalman or particle filter) smooths the result. Kiosks have a fixed known location.
+
 **Routing** - The user picks a destination (or enters a PNR). The engine runs A* on the graph with filters (accessible only, fastest, least crowded).
+
 **Guidance** - The route is shown on a 2D/3D map with step-by-step instructions, and spoken by TTS for visually impaired users, with vibration cues on turns.
+
 **Real-time updates** - Admin changes (platform change, lift out of service) or crowd data update edge weights, and active routes are recalculated and pushed via WebSocket.
+
 **Integration** - The Integration Service fetches PNR and train status, so the app suggests “Your train 12345 is on Platform 4, 6 min walk.”
 
 ## Use Cases
@@ -75,32 +80,31 @@ Kiosk-to-phone handoff. A kiosk shows a QR code, and scanning it sends the route
 
 
 ## Dependencies
-**Data dependencies**
+**Data dependencies:**
 
 Accurate station floor plans/CAD drawings from Indian Railways (per station)
 POI data (facilities, platforms, coach position info)
 Real-time train data: NTES / IRCTC / RailMadad APIs (PNR status, platform, delays)
 
-**Hardware dependencies**
+**Hardware dependencies:**
 
 BLE beacons or Wi-Fi access points installed across the station
 Touchscreen kiosks with network connectivity and power
 Optional: CCTV cameras for crowd density, speakers for audio guidance
 
-**Software / service dependencies**
+**Software / service dependencies:**
 
 Map SDKs (Mapbox / OpenStreetMap), cloud hosting, push notification service
 TTS/STT and translation services (Bhashini / Google)
 Integration with existing apps (IRCTC Rail Connect, UTS, RailMadad) via APIs/SDKs
 
-**Organisational dependencies**
+**Organisational dependencies:**
 
 Station administration to maintain and update map data
 Permission from the Railways for API access and hardware installation
 Staff training for the admin dashboard
 
-**Suggested Implementation Phases**
-
+## Suggested Implementation Phases
 **Phase 1 (pilot):** Digitise one station, build the routing engine, mobile app, and kiosk.
 **Phase 2:** Add voice guidance, accessibility routing, and PNR integration.
 **Phase 3:** Crowd-aware routing, admin analytics, and scale to more stations.
